@@ -50,6 +50,7 @@ The goal is to demonstrate **professional network engineering capability**, incl
 
 ## 🧱 Repository Structure
 
+```
 docs/ # Documentation and build notes
 configs/ # Network and firewall configs
 diagrams/ # Network topology diagrams
@@ -57,7 +58,7 @@ monitoring/ # Zabbix / Grafana templates
 logging/ # ELK/OpenSearch configs
 scripts/ # Test and automation tools
 demo/ # Short video demonstrations
-
+```
 
 ---
 
@@ -77,7 +78,7 @@ Then set up authentication & firewall rules:
 
 ---
 
-## 💡 Demonstration Videos (optional but recommended for portfolio)
+## 💡 Demonstration Videos
 
 | Demo | Description |
 |------|-------------|
