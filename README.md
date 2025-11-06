@@ -97,6 +97,6 @@ MIT License — free for learning and professional demonstration.
 ## ✍️ Author
 
 **Crispus Omollo**  
-Senior ICT Officer | Network & Infrastructure Architect  
+Senior ICT Officer | Network & Infrastructure Support Engineer  
 📧 crispusomollo@gmail.com
 
