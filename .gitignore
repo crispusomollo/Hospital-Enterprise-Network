@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+# Python
+__pycache__/
+*.pyc
+# Node
+node_modules/
+# Media
+*.mp4
+*.mov
+*.gif
+# Editor
+.vscode/
+.idea/
+# EVE-NG / GNS3 exports
+*.unl
+*.gns3
