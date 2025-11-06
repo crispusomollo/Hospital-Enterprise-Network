@@ -1,0 +1,69 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "Zabbix",
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "id": 1,
+      "title": "Core Switch - Interface Utilization",
+      "type": "timeseries",
+      "targets": [
+        {
+          "target": "interface.ifinoctets{host=\"HQ-CORE-SW\",interface=\"GigabitEthernet0/1\"}"
+        },
+        {
+          "target": "interface.ifoutoctets{host=\"HQ-CORE-SW\",interface=\"GigabitEthernet0/1\"}"
+        }
+      ]
+    },
+    {
+      "datasource": "Zabbix",
+      "gridPos": {"h": 6, "w": 12, "x": 12, "y": 0},
+      "id": 2,
+      "title": "IPSec Tunnel Latency (HQ ↔ ClinicA)",
+      "type": "timeseries",
+      "targets": [
+        {"target": "simple.ping.rtt{host=\"ClinicA-Router\",dest=\"10.10.20.10\"}"}
+      ]
+    },
+    {
+      "datasource": "Zabbix",
+      "gridPos": {"h": 6, "w": 12, "x": 0, "y": 8},
+      "id": 3,
+      "title": "Firewall (HQ-FW-A) - CPU & Memory",
+      "type": "timeseries",
+      "targets": [
+        {"target": "system.cpu.util{host=\"HQ-FW-A\"}"},
+        {"target": "vm.memory.size[used]{host=\"HQ-FW-A\"}"}
+      ]
+    },
+    {
+      "datasource": "Zabbix",
+      "gridPos": {"h": 4, "w": 24, "x": 0, "y": 14},
+      "id": 4,
+      "title": "Site Overview — Host Availability",
+      "type": "stat",
+      "targets": [
+        {"target": "host.status{group=\"Hospital Network\"}"}
+      ]
+    }
+  ],
+  "schemaVersion": 34,
+  "style": "dark",
+  "tags": ["hospital","network","zabbix"],
+  "templating": {"list": []},
+  "time": {"from": "now-6h", "to": "now"},
+  "timepicker": {},
+  "title": "Hospital Network - Operations",
+  "uid": "hospital-network-dashboard",
+  "version": 1
+}
+
