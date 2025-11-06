@@ -1,0 +1,84 @@
+<!-- pfSense: High-level guidance and example rules you can implement via the GUI.
+     Replace interface names (LAN, WAN) and IPs to match your lab. -->
+
+<!-- Interfaces -->
+<!-- WAN: public internet (simulation) -->
+<!-- LAN: trunk to HQ-Core-SW carrying VLANs (use VLAN interfaces in pfSense) -->
+
+<!-- Example NAT: public IP -> DMZ web server -->
+<nat>
+  <rule>
+    <interface>WAN</interface>
+    <protocol>tcp</protocol>
+    <destination_port>443</destination_port>
+    <target>10.10.80.10</target> <!-- DMZ web server -->
+    <description>Port forward HTTPS to DMZ web server</description>
+  </rule>
+</nat>
+
+<!-- Firewall rules (example, ordered) -->
+<filter>
+  <!-- Allow MGMT subnet to reach pfSense web GUI (restrict to MGMT network only) -->
+  <rule>
+    <interface>LAN</interface>
+    <source>10.10.10.0/24</source>
+    <destination>10.10.10.2</destination>
+    <port>443</port>
+    <action>pass</action>
+    <description>Allow MGMT to GUI</description>
+  </rule>
+
+  <!-- Allow Staff -> Servers on required ports (HTTP, HTTPS, LDAP) -->
+  <rule>
+    <interface>LAN</interface>
+    <source>10.10.30.0/24</source>
+    <destination>10.10.20.0/24</destination>
+    <port>80,443,389,636</port>
+    <action>pass</action>
+    <description>Staff to Servers limited</description>
+  </rule>
+
+  <!-- Deny Clinical devices direct Internet access except to update hosts -->
+  <rule>
+    <interface>LAN</interface>
+    <source>10.10.50.0/24</source>
+    <destination>!10.10.0.0/16</destination>
+    <action>block</action>
+    <description>Block Clinical direct Internet access</description>
+  </rule>
+
+  <!-- Guest: Internet only -->
+  <rule>
+    <interface>LAN</interface>
+    <source>10.10.70.0/24</source>
+    <destination>any</destination>
+    <action>pass</action>
+    <description>Guest Internet access (block internal below)</description>
+  </rule>
+  <!-- Explicitly block guest to internal subnets -->
+  <rule>
+    <interface>LAN</interface>
+    <source>10.10.70.0/24</source>
+    <destination>10.10.0.0/16</destination>
+    <action>block</action>
+    <description>Block Guest to internal</description>
+  </rule>
+</filter>
+
+<!-- IPsec: Basic site-to-site (pfSense GUI: VPN -> IPsec) -->
+<ipsec>
+  <phase1>
+    <remote_gateway>172.16.100.2</remote_gateway>
+    <authentication_method>pre_shared_key</authentication_method>
+    <pre_shared_key>&lt;PRE_SHARED_KEY&gt;</pre_shared_key>
+    <encryption_algorithm>aes256</encryption_algorithm>
+    <hash_algorithm>sha256</hash_algorithm>
+    <dh_group>14</dh_group>
+  </phase1>
+  <phase2>
+    <local_subnet>10.10.0.0/16</local_subnet>
+    <remote_subnet>10.110.0.0/16</remote_subnet>
+    <protocol>esp</protocol>
+  </phase2>
+</ipsec>
+
