@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+  <version>5.0</version>
+  <date>2025-11-06T00:00:00Z</date>
+  <groups>
+    <group>
+      <name>Hospital Network</name>
+    </group>
+  </groups>
+  <templates>
+    <template>
+      <template>Template_Hospital_Network</template>
+      <name>Template_Hospital_Network</name>
+      <description>Template for core switches, routers and firewalls — SNMP interface, CPU, memory, IPSec tunnel, generic service checks</description>
+      <applications>
+        <application>
+          <name>Networking</name>
+        </application>
+      </applications>
+      <items>
+        <!-- SNMP: interface in octets (index will be parameterized per host) -->
+        <item>
+          <name>Interface {#IFNAME} - In Octets</name>
+          <type>SNMPv2 agent</type>
+          <key>net.if.in[{#SNMPINDEX}]</key>
+          <delay>60s</delay>
+          <history>7d</history>
+          <status>0</status>
+        </item>
+
+        <item>
+          <name>Interface {#IFNAME} - Out Octets</name>
+          <type>SNMPv2 agent</type>
+          <key>net.if.out[{#SNMPINDEX}]</key>
+          <delay>60s</delay>
+          <history>7d</history>
+          <status>0</status>
+        </item>
+
+        <item>
+          <name>CPU Load (1m)</name>
+          <type>SNMPv2 agent</type>
+          <key>system.cpu.util[,avg1]</key>
+          <delay>60s</delay>
+          <value_type>float</value_type>
+        </item>
+
+        <item>
+          <name>Memory Usage</name>
+          <type>SNMPv2 agent</type>
+          <key>vm.memory.size[used]</key>
+          <delay>60s</delay>
+          <value_type>numeric unsigned</value_type>
+        </item>
+
+        <item>
+          <name>IPSec Tunnel: Tunnel up (peer {#PEER})</name>
+          <type>Simple check</type>
+          <key>net.tunnel.ipsec[{#PEER}].status</key>
+          <delay>60s</delay>
+          <value_type>numeric unsigned</value_type>
+        </item>
+
+        <item>
+          <name>Ping to EMR Server (10.10.20.10)</name>
+          <type>Simple check</type>
+          <key>icmppingsec[10.10.20.10]</key>
+          <delay>60s</delay>
+        </item>
+      </items>
+
+      <triggers>
+        <trigger>
+          <description>Interface {#IFNAME} down</description>
+          <expression>{Template_Hospital_Network:net.if.status[{#SNMPINDEX}].last()}=2</expression>
+          <priority>High</priority>
+        </trigger>
+
+        <trigger>
+          <description>IPSec tunnel to {#PEER} is down</description>
+          <expression>{Template_Hospital_Network:net.tunnel.ipsec[{#PEER}].last()}=0</expression>
+          <priority>Disaster</priority>
+        </trigger>
+
+        <trigger>
+          <description>High CPU load (>85%)</description>
+          <expression>{Template_Hospital_Network:system.cpu.util[,avg1].last()}>85</expression>
+          <priority>Average</priority>
+        </trigger>
+
+        <trigger>
+          <description>EMR ping unreachable</description>
+          <expression>{Template_Hospital_Network:icmppingsec[10.10.20.10].max(5m)}=0</expression>
+          <priority>High</priority>
+        </trigger>
+      </triggers>
+
+      <graphs>
+        <graph>
+          <name>Interface {#IFNAME} Traffic</name>
+          <width>900</width>
+          <height>200</height>
+        </graph>
+      </graphs>
+
+    </template>
+  </templates>
+</zabbix_export>
+
