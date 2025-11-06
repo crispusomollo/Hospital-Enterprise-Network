@@ -1,0 +1,18 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/syslog
+      - /var/log/messages
+      - /var/log/pfsense.log
+    fields:
+      log_origin: hospital-network
+    fields_under_root: true
+
+output.logstash:
+  hosts: ["10.10.20.15:5044"]
+  ssl.enabled: false
+
+setup.template.enabled: true
+setup.ilm.enabled: false
+
