@@ -18,6 +18,9 @@ We use private block: `10.10.0.0/16` for HQ networks. Branch networks may use se
 | 70 | GUEST | 10.10.70.0/24 | Guest Wi-Fi / ephemeral devices | Internet-only; strictly blocked to internal subnets |
 | 80 | DMZ | 10.10.80.0/24 | Public-facing services (portal, VPN endpoints) | Hardened hosts; reverse-proxy & WAF recommended |
 
+<img width="671" height="437" alt="image" src="https://github.com/user-attachments/assets/b59fd4db-3776-42e9-a59f-bc72dd60667e" />
+
+
 ## DHCP ranges & reservations
 - STAFF: `10.10.30.100 - 10.10.30.200` (DHCP)
 - GUEST: `10.10.70.100 - 10.10.70.250` (DHCP)
