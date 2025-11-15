@@ -1,0 +1,58 @@
+! Cisco IOS startup-config - HQ-CORE-SW
+! Uplink to pfSense (trunk)
+interface GigabitEthernet0/1
+description To-pfSense-LAN
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk native vlan 10
+switchport trunk allowed vlan 10,20,30,40,50,70
+no shutdown
+!
+! Uplink to Branch Router (site-to-site)
+interface GigabitEthernet0/2
+description To-ClinicA-Router
+no switchport
+ip address 172.16.100.1 255.255.255.252
+no shutdown
+!
+! Example access ports
+interface GigabitEthernet0/10
+description Staff-Workstation-1
+switchport mode access
+switchport access vlan 30
+spanning-tree portfast
+no shutdown
+!
+interface GigabitEthernet0/20
+description Clinical-PACS-Viewer
+switchport mode access
+switchport access vlan 50
+spanning-tree bpduguard enable
+no shutdown
+!
+interface GigabitEthernet0/40
+description ServerHost-Uplink
+switchport mode trunk
+switchport trunk allowed vlan 20,80
+no shutdown
+!
+! OSPF for internal routing (optional)
+router ospf 1
+router-id 10.10.10.254
+network 10.10.10.0 0.0.0.255 area 0
+network 10.10.20.0 0.0.0.255 area 0
+network 10.10.30.0 0.0.0.255 area 0
+network 10.10.50.0 0.0.0.255 area 0
+network 172.16.100.0 0.0.0.3 area 0
+!
+! Security
+ip ssh version 2
+ip access-list extended MGMT_ONLY
+permit tcp 10.10.10.0 0.0.0.255 host 10.10.10.1 eq 22
+deny ip any any log
+!
+line vty 0 4
+login local
+transport input ssh
+!
+end
