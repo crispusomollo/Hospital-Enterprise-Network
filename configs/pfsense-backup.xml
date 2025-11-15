@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<source>10.10.10.0/24</source>
+<destination>10.10.10.1</destination>
+<protocol>tcp</protocol>
+<dport>443</dport>
+<descr>Allow MGMT to GUI</descr>
+</rule>
+
+
+<!-- Staff -> Servers limited ports -->
+<rule>
+<interface>VLAN30_STAFF</interface>
+<action>pass</action>
+<source>10.10.30.0/24</source>
+<destination>10.10.20.0/24</destination>
+<protocol>tcp</protocol>
+<dport>80,443,389,636,5432</dport>
+<descr>Staff to Servers limited</descr>
+</rule>
+
+
+<!-- Guest: Internet only, block internal -->
+<rule>
+<interface>VLAN40_GUEST</interface>
+<action>block</action>
+<source>10.10.40.0/24</source>
+<destination>10.10.0.0/16</destination>
+<descr>Block Guest to internal</descr>
+</rule>
+<rule>
+<interface>VLAN40_GUEST</interface>
+<action>pass</action>
+<source>10.10.40.0/24</source>
+<destination>any</destination>
+<descr>Allow Guest to internet</descr>
+</rule>
+
+
+<!-- Clinical: only to EMR server and DNS -->
+<rule>
+<interface>VLAN50_CLINICAL</interface>
+<action>pass</action>
+<source>10.10.50.0/24</source>
+<destination>10.10.20.10/32</destination>
+<protocol>tcp</protocol>
+<dport>443,8443</dport>
+<descr>Clinical to EMR</descr>
+</rule>
+<rule>
+<interface>VLAN50_CLINICAL</interface>
+<action>block</action>
+<source>10.10.50.0/24</source>
+<destination>any</destination>
+<descr>Block other Clinical traffic (allow updates by IP exceptions)</descr>
+</rule>
+</filterrules>
+
+
+<!-- IPsec site-to-site stub (peer configured separately) -->
+<ipsec>
+<tunnels>
+<tunnel>
+<remote>172.16.100.2</remote>
+<localsubnet>10.10.0.0/16</localsubnet>
+<remotesubnet>10.110.0.0/16</remotesubnet>
+<psk>&lt;PRE_SHARED_KEY&gt;</psk>
+<descr>HQ &lt;-&gt; ClinicA</descr>
+</tunnel>
+</tunnels>
+</ipsec>
+
+
+</pfSense>
